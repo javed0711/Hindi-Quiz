@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindi Pakhwada Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .gradient-text {
+            background: linear-gradient(90deg, #ff9933, #138808);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Dynamic Theme Variables */
+        :root {
+            --bg-grad: linear-gradient(135deg, #fff3e0 0%, #f0fdf4 100%);
+            --accent-color: #ea580c; 
+            --accent-light: #ffedd5; 
+            --accent-dark: #7c2d12;
+            --accent-border: #fdba74;
+        }
+
+        body {
+            background: var(--bg-grad);
+            background-attachment: fixed;
+            transition: background 0.8s ease-in-out;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Colorful Round Themes */
+        .theme-home { --bg-grad: linear-gradient(135deg, #fffcf9 0%, #f0f8ff 100%); --accent-color: #2563eb; --accent-light: #dbeafe; --accent-dark: #1e3a8a; --accent-border: #93c5fd;}
+        .theme-1 { --bg-grad: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%); --accent-color: #9333ea; --accent-light: #f3e8ff; --accent-dark: #4c1d95; --accent-border: #d8b4fe;}
+        .theme-2 { --bg-grad: linear-gradient(120deg, #f6d365 0%, #fda085 100%); --accent-color: #ea580c; --accent-light: #ffedd5; --accent-dark: #7c2d12; --accent-border: #fdba74;}
+        .theme-3 { --bg-grad: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); --accent-color: #059669; --accent-light: #d1fae5; --accent-dark: #064e3b; --accent-border: #6ee7b7;}
+        .theme-4 { --bg-grad: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); --accent-color: #e11d48; --accent-light: #ffe4e6; --accent-dark: #881337; --accent-border: #fda4af;}
+        .theme-5 { --bg-grad: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); --accent-color: #0284c7; --accent-light: #e0f2fe; --accent-dark: #0c4a6e; --accent-border: #7dd3fc;}
+
+        /* Theme Utility Classes */
+        .btn-accent { background-color: var(--accent-color); color: white; transition: all 0.3s ease; }
+        .btn-accent:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .text-accent-dark { color: var(--accent-dark); }
+        .bg-accent-light { background-color: var(--accent-light); }
+        .border-accent { border-color: var(--accent-border); }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 35px 0 rgba(31, 38, 135, 0.1);
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* STRICT View Hiding for SPA (Fixes the overlapping pages issue) */
+        .app-view { display: none !important; }
+        .app-view.active-view { display: flex !important; animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .correct-pulse { animation: correctPulse 1.5s infinite; border-color: #10b981 !important; background-color: #d1fae5 !important; }
+        @keyframes correctPulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="theme-home min-h-screen flex flex-col text-gray-800">
+
+    <header class="bg-white shadow-sm py-3 px-6 flex justify-between items-center z-10 sticky top-0 border-b border-accent transition-colors duration-500">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
+            <div class="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center text-accent-dark border-2 border-accent">
+                <i class="fa-solid fa-microphone-lines text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-black gradient-text tracking-wide hidden sm:block">IIRS HINDI PAKHWADA QUIZ</h1>
+            <h1 class="text-xl font-black gradient-text tracking-wide sm:hidden">IIRS QUIZ</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="role-badge" class="hidden px-3 py-1 rounded-full text-sm font-bold bg-gray-100 text-gray-600 border border-gray-300 shadow-inner"></span>
+            <button onclick="switchView('home')" class="text-gray-500 hover:text-accent-dark transition p-2 rounded-full hover:bg-gray-100">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow relative overflow-hidden flex flex-col">
+        
+        <!-- View: Home (Role Selection) -->
+        <section id="view-home" class="app-view active-view flex-col p-6 max-w-4xl mx-auto h-full justify-center flex-grow">
+            <div class="text-center mb-10">
+                <img src="https://placehold.co/200x200/ea580c/ffffff?text=IIRS+Logo" class="w-32 h-32 rounded-full mx-auto mb-6 shadow-xl border-4 border-white" alt="Logo" onerror="this.style.display='none'">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 drop-shadow-sm">Welcome to the Quiz Platform</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Please select your role to proceed to the designated workspace.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto w-full">
+                <button onclick="setRole('main')" class="glass-panel p-8 rounded-2xl flex flex-col items-center gap-4 hover:-translate-y-2 transition-transform cursor-pointer group">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors"><i class="fa-solid fa-desktop"></i></div>
+                    <h3 class="text-xl font-bold text-gray-800">Main Screen</h3>
+                    <p class="text-sm text-gray-500 text-center">Projector display with live questions and leaderboard.</p>
+                </button>
+                
+                <button onclick="setRole('organizer')" class="glass-panel p-8 rounded-2xl flex flex-col items-center gap-4 hover:-translate-y-2 transition-transform cursor-pointer group">
+                    <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition-colors"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 class="text-xl font-bold text-gray-800">Organizer</h3>
+                    <p class="text-sm text-gray-500 text-center">Manage questions, timer, and control game flow.</p>
+                </button>
+                
+                <button onclick="switchView('team-register')" class="glass-panel p-8 rounded-2xl flex flex-col items-center gap-4 hover:-translate-y-2 transition-transform cursor-pointer group border-2 border-orange-200">
+                    <div class="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl group-hover:bg-orange-600 group-hover:text-white transition-colors"><i class="fa-solid fa-users"></i></div>
+                    <h3 class="text-xl font-bold text-gray-800">Team Play</h3>
+                    <p class="text-sm text-gray-500 text-center">Join via mobile, answer questions, and compete!</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- View: Team Registration -->
+        <section id="view-team-register" class="app-view flex-col p-4 max-w-md mx-auto justify-center flex-grow w-full">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl relative overflow-hidden w-full">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-green-500"></div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">Register Team</h2>
+                <p class="text-gray-500 mb-6 text-sm">Min 3, Max 5 candidates per team.</p>
+                
+                <!-- Tabs -->
+                <div class="flex border-b mb-6">
+                    <button class="flex-1 py-2 font-bold text-accent-dark border-b-2 border-accent" id="tab-new" onclick="toggleRegTab('new')">New Team</button>
+                    <button class="flex-1 py-2 font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600" id="tab-recon" onclick="toggleRegTab('recon')">Reconnect</button>
+                </div>
+
+                <form id="form-new-team" onsubmit="handleTeamRegister(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Team Name *</label>
+                        <input type="text" id="reg-tname" required class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-light focus:border-accent outline-none transition bg-white" placeholder="e.g. Aryabhata">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Secret Code * <span class="text-xs font-normal text-gray-500">(To reconnect if disconnected)</span></label>
+                        <input type="text" id="reg-tsecret" required class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-light focus:border-accent outline-none transition bg-white" placeholder="Choose a simple PIN/Word">
+                    </div>
+                    
+                    <div class="pt-2 border-t">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Team Members (3 to 5)</label>
+                        <input type="text" id="reg-m1" required class="w-full p-2 mb-2 rounded-lg border border-gray-300 text-sm focus:border-accent outline-none" placeholder="Member 1 (Required)">
+                        <input type="text" id="reg-m2" required class="w-full p-2 mb-2 rounded-lg border border-gray-300 text-sm focus:border-accent outline-none" placeholder="Member 2 (Required)">
+                        <input type="text" id="reg-m3" required class="w-full p-2 mb-2 rounded-lg border border-gray-300 text-sm focus:border-accent outline-none" placeholder="Member 3 (Required)">
+                        <input type="text" id="reg-m4" class="w-full p-2 mb-2 rounded-lg border border-gray-300 text-sm focus:border-accent outline-none" placeholder="Member 4 (Optional)">
+                        <input type="text" id="reg-m5" class="w-full p-2 rounded-lg border border-gray-300 text-sm focus:border-accent outline-none" placeholder="Member 5 (Optional)">
+                    </div>
+
+                    <button type="submit" class="w-full btn-accent py-3 rounded-xl font-bold text-lg shadow-lg mt-4"><i class="fa-solid fa-right-to-bracket mr-2"></i> Join Quiz</button>
+                </form>
+
+                <form id="form-recon-team" onsubmit="handleTeamReconnect(event)" class="space-y-4 hidden">
+                    <p class="text-sm text-gray-600 mb-4 bg-orange-50 p-3 rounded-lg border border-orange-200">Use this if you accidentally closed the app and need to rejoin your active session.</p>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Registered Team Name</label>
+                        <input type="text" id="rec-tname" required class="w-full p-3 rounded-xl border border-gray-300 focus:border-accent outline-none" placeholder="e.g. Aryabhata">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Secret Code</label>
+                        <input type="text" id="rec-tsecret" required class="w-full p-3 rounded-xl border border-gray-300 focus:border-accent outline-none" placeholder="Enter your secret PIN/Word">
+                    </div>
+                    <button type="submit" class="w-full bg-gray-800 text-white hover:bg-gray-900 transition py-3 rounded-xl font-bold text-lg shadow-lg mt-4"><i class="fa-solid fa-plug mr-2"></i> Reconnect</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- View: Team Mobile Play Area -->
+        <section id="view-team-play" class="app-view flex-col p-4 max-w-md mx-auto flex-grow w-full h-[calc(100vh-80px)]">
+            
+            <!-- Waiting State -->
+            <div id="team-state-waiting" class="glass-panel rounded-3xl p-8 text-center flex flex-col items-center justify-center flex-grow shadow-lg">
+                <div class="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mb-6 animate-pulse">
+                    <i class="fa-solid fa-hourglass-half text-3xl text-accent-dark"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Get Ready!</h3>
+                <p class="text-gray-600">Waiting for the organizer to launch the next question on the main screen...</p>
+                <div class="mt-8 px-4 py-2 bg-gray-100 rounded-full text-sm font-bold text-gray-600 shadow-inner" id="team-identity-display">Team: Loading...</div>
+            </div>
+
+            <!-- Active Question State -->
+            <div id="team-state-active" class="hidden h-full flex flex-col">
+                <div class="glass-panel p-4 rounded-2xl mb-4 flex justify-between items-center shadow-sm">
+                    <span class="text-xs font-bold bg-accent-light text-accent-dark px-3 py-1 rounded-full border border-accent uppercase tracking-wider" id="team-q-round">Round</span>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-accent-dark"></i>
+                        <span class="text-xl font-mono font-bold time-display" id="team-timer">--s</span>
+                    </div>
+                </div>
+                
+                <div class="glass-panel p-6 rounded-2xl flex-grow flex flex-col shadow-lg overflow-y-auto">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-6 border-l-4 border-accent pl-3" id="team-q-text">Question text...</h3>
+                    
+                    <!-- Dynamic Input Area (Buttons for MCQ, Text Input for Text) -->
+                    <div id="team-input-area" class="flex flex-col gap-3 mt-auto">
+                        <!-- Inputs injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locked State -->
+            <div id="team-state-locked" class="hidden glass-panel rounded-3xl p-8 text-center flex flex-col items-center justify-center flex-grow shadow-lg border-2 border-accent-border">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <i class="fa-solid fa-lock text-4xl text-green-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Answer Locked!</h3>
+                <p class="text-gray-600 mb-4">Your response has been recorded.</p>
+                <div class="bg-gray-100 w-full p-4 rounded-xl text-left border border-gray-200">
+                    <p class="text-xs text-gray-500 uppercase font-bold mb-1">Your Answer:</p>
+                    <p class="text-lg font-semibold text-gray-800" id="team-submitted-ans">...</p>
+                </div>
+                <p class="text-sm text-gray-500 mt-6 animate-pulse">Look at the main screen for results...</p>
+            </div>
+        </section>
+
+        <!-- View: Organizer Dashboard -->
+        <section id="view-organizer" class="app-view flex-col lg:flex-row p-4 lg:p-6 gap-6 max-w-7xl mx-auto flex-grow h-[calc(100vh-70px)] w-full">
+            
+            <!-- Column 1: Manage Questions -->
+            <div class="glass-panel rounded-2xl flex flex-col w-full lg:w-1/2 shadow-lg overflow-hidden h-full">
+                <div class="bg-accent-light p-4 border-b border-accent flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-accent-dark"><i class="fa-solid fa-database mr-2"></i> Question Bank</h2>
+                    <span class="text-xs bg-white px-2 py-1 rounded shadow-sm font-mono text-gray-600">Persisted in DB</span>
+                </div>
+                
+                <div class="p-4 flex-grow overflow-y-auto bg-white/50" id="org-q-list">
+                    <!-- Questions List injected here -->
+                    <p class="text-gray-500 text-center mt-10">Loading questions...</p>
+                </div>
+                
+                <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
+                    <button onclick="document.getElementById('modal-add-q').classList.remove('hidden')" class="w-full py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-900 transition shadow-md">
+                        <i class="fa-solid fa-plus mr-2"></i> Add New Question
+                    </button>
+                    <button onclick="loadSampleQuestions()" class="w-full py-2 bg-blue-50 text-blue-700 rounded-xl font-bold hover:bg-blue-100 transition shadow-sm border border-blue-200">
+                        <i class="fa-solid fa-vial mr-2"></i> Load Sample Questions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Column 2: Live Control Panel -->
+            <div class="glass-panel rounded-2xl flex flex-col w-full lg:w-1/2 shadow-lg h-full overflow-hidden border-2 border-accent-border">
+                <div class="bg-accent-dark text-white p-4 flex justify-between items-center">
+                    <h2 class="text-xl font-bold"><i class="fa-solid fa-gamepad mr-2"></i> Live Control</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm opacity-80 uppercase tracking-wide">Status:</span>
+                        <span id="org-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-white text-accent-dark shadow-sm uppercase">WAITING</span>
+                    </div>
+                </div>
+
+                <div class="p-6 flex-grow flex flex-col bg-white/50">
+                    
+                    <div id="org-no-q-active" class="flex-grow flex flex-col items-center justify-center text-center opacity-70">
+                        <i class="fa-solid fa-display text-5xl mb-4 text-gray-300"></i>
+                        <p class="text-lg text-gray-500">Select a question from the bank and click "Launch" to start.</p>
+                    </div>
+
+                    <div id="org-q-active" class="hidden flex-grow flex flex-col">
+                        <div class="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-2 h-full bg-accent-color"></div>
+                            <h3 class="font-bold text-gray-800 mb-1" id="org-live-round">Round</h3>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-2" id="org-live-text">Question text...</p>
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border">
+                                <div class="text-sm"><span class="font-bold text-green-600" id="org-live-pts">+10</span> / <span class="font-bold text-red-600" id="org-live-neg">-5</span></div>
+                                <div class="text-sm font-bold text-gray-700 bg-gray-200 px-2 py-1 rounded border-gray-300">Duration: <span id="org-live-dur" class="text-accent-dark"></span>s</div>
+                                <div class="text-sm font-bold text-gray-700 bg-gray-200 px-2 py-1 rounded">Ans: <span id="org-live-ans" class="text-accent-dark"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white p-4 rounded-xl border text-center shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Time Remaining</p>
+                                <p class="text-3xl font-mono font-black text-gray-800 time-display">--s</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border text-center shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Submissions</p>
+                                <p class="text-3xl font-black text-accent-dark" id="org-live-subs">0 / 0</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-auto space-y-3">
+                            <button id="btn-org-lock" onclick="forceLock()" class="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold transition shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-lock"></i> Force Lock (Stop Timer)
+                            </button>
+                            <button id="btn-org-reveal" onclick="revealAndScore()" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2 text-lg">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Reveal Answer & Apply Points
+                            </button>
+                            <button id="btn-org-clear" onclick="clearMainScreen()" class="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-bold transition shadow flex items-center justify-center gap-2 mt-4 border border-gray-300">
+                                <i class="fa-solid fa-broom"></i> Clear Main Screen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Main Screen -->
+        <section id="view-main" class="app-view flex-row h-[calc(100vh-70px)] w-full overflow-hidden flex-grow">
+            
+            <!-- Left Sidebar: Leaderboard -->
+            <div class="w-1/4 min-w-[250px] max-w-[350px] glass-panel border-r border-accent-border flex flex-col shadow-2xl z-10 h-full">
+                <div class="p-4 bg-accent-dark text-white text-center font-black text-xl tracking-wide uppercase shadow-md">
+                    Leaderboard
+                </div>
+                <div class="flex-grow overflow-y-auto p-4 space-y-3" id="main-leaderboard">
+                    <!-- Teams injected here -->
+                </div>
+                <div class="p-3 bg-gray-50 border-t text-center text-xs text-gray-400 font-mono">
+                    Join at: iirs-quiz.web.app
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="flex-grow relative flex flex-col items-center justify-center p-8 lg:p-12 h-full overflow-y-auto">
+                
+                <!-- Idle State -->
+                <div id="main-state-waiting" class="text-center transition-all duration-500 transform scale-100 flex flex-col items-center justify-center h-full w-full">
+                    <div class="w-40 h-40 mx-auto rounded-full bg-white shadow-2xl border-8 border-accent-light flex items-center justify-center mb-8 relative overflow-hidden">
+                       <i class="fa-solid fa-microphone-lines text-6xl text-accent-color"></i>
+                    </div>
+                    <h2 class="text-5xl lg:text-6xl font-black text-gray-800 drop-shadow-md mb-4 text-center">Hindi Pakhwada Quiz</h2>
+                    <p class="text-2xl text-accent-dark font-semibold bg-white/50 inline-block px-6 py-2 rounded-full backdrop-blur-sm border border-white/40 shadow-sm text-center">Waiting for the next question...</p>
+                </div>
+
+                <!-- Active Question Area -->
+                <div id="main-state-active" class="w-full max-w-5xl hidden flex-col h-full">
+                    
+                    <!-- Header Bar -->
+                    <div class="flex justify-between items-end mb-6 shrink-0">
+                        <div>
+                            <span class="inline-block px-4 py-1 bg-accent-dark text-white rounded-t-lg font-bold text-sm tracking-wide uppercase" id="main-q-round">Round</span>
+                            <div class="bg-white px-6 py-2 rounded-b-lg rounded-tr-lg shadow-md border-b-4 border-accent inline-flex items-center gap-4">
+                                <span class="font-bold text-gray-700">Points:</span>
+                                <span class="text-green-600 font-black text-lg" id="main-q-pts">+10</span>
+                                <span class="text-gray-300">|</span>
+                                <span class="text-red-600 font-black text-lg" id="main-q-neg">-5</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Huge Timer -->
+                        <div class="bg-white rounded-full px-6 py-2 shadow-lg border-4 border-gray-100 flex items-center gap-3 transform origin-right transition-transform" id="main-timer-container">
+                            <i class="fa-solid fa-stopwatch text-3xl text-gray-400" id="main-timer-icon"></i>
+                            <span class="text-5xl font-mono font-black text-gray-800 time-display tracking-tighter" id="main-timer-text">10.0s</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div class="glass-panel p-8 lg:p-12 rounded-3xl shadow-2xl border-t-8 border-accent-color flex-grow flex flex-col relative overflow-hidden min-h-[400px]">
+                        
+                        <!-- Media Area (Hidden if none) -->
+                        <div id="main-media-container" class="hidden mb-8 w-full max-h-[30vh] bg-black/5 rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
+                            <!-- Injected media -->
+                        </div>
+
+                        <!-- Question Text -->
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 leading-tight mb-8" id="main-q-text">Loading question...</h2>
+                        
+                        <!-- Options Grid -->
+                        <div id="main-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
+                            <!-- Options injected here -->
+                        </div>
+
+                        <!-- Lock Banner (Hidden by default) -->
+                        <div id="main-lock-banner" class="hidden absolute inset-0 bg-white/95 backdrop-blur-md z-10 flex flex-col items-center justify-center p-8 text-center">
+                            <h3 class="text-3xl font-black text-gray-800 mb-6 uppercase tracking-wider"><i class="fa-solid fa-lock text-accent-dark mr-2"></i> Answers Locked</h3>
+                            <div class="w-full max-w-3xl bg-gray-50 rounded-2xl shadow-inner border-2 border-gray-200 p-6 max-h-[60%] overflow-y-auto">
+                                <ul id="main-lock-list" class="space-y-3">
+                                    <!-- Lock times injected here -->
+                                </ul>
+                            </div>
+                            <p class="text-gray-500 mt-6 animate-pulse font-semibold">Waiting for organizer to reveal results...</p>
+                        </div>
+
+                        <!-- Answer Reveal Banner (Hidden by default) -->
+                        <div id="main-reveal-banner" class="hidden absolute inset-0 bg-white/95 backdrop-blur-md z-20 flex flex-col items-center justify-start p-6 text-center overflow-y-auto">
+                            <h3 class="text-xl font-bold text-gray-500 uppercase tracking-widest mb-2 shrink-0">Correct Answer</h3>
+                            <div class="text-4xl font-black text-green-600 mb-6 p-4 bg-green-50 rounded-2xl border-4 border-green-200 shadow-inner w-full max-w-3xl shrink-0" id="main-reveal-ans">Answer Text</div>
+                            
+                            <div id="main-fastest-winner" class="hidden bg-accent-dark text-white p-4 rounded-2xl shadow-xl transform scale-105 mb-6 w-full max-w-3xl shrink-0">
+                                <p class="text-xs uppercase tracking-widest text-accent-light mb-1">Fastest Finger First</p>
+                                <h4 class="text-2xl font-black mb-1"><i class="fa-solid fa-trophy text-yellow-400 mr-2"></i> Team <span id="main-winner-name">Name</span></h4>
+                                <p class="text-md font-bold text-green-300">Awarded <span id="main-winner-pts"></span> Points!</p>
+                            </div>
+
+                            <div class="w-full max-w-3xl bg-gray-50 rounded-xl shadow-inner border border-gray-200 p-4 shrink-0">
+                                <h4 class="text-lg font-bold text-gray-700 mb-3 border-b pb-2 text-left">Team Performance</h4>
+                                <ul id="main-reveal-list" class="space-y-2">
+                                    <!-- All team results injected here -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Question Modal (Organizer) -->
+    <div id="modal-add-q" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden transform transition-transform scale-100">
+            <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
+                <h3 class="text-lg font-bold">Add Question to Bank</h3>
+                <button onclick="document.getElementById('modal-add-q').classList.add('hidden')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow">
+                <form id="form-add-q" onsubmit="handleAddQuestion(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Round Name (Creates Theme)</label>
+                            <input type="text" id="add-q-round" required class="w-full p-2 rounded border focus:border-accent outline-none" placeholder="e.g. Round 1, Buzzer">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Timer Duration (Seconds)</label>
+                            <input type="number" id="add-q-duration" required min="5" max="120" value="10" class="w-full p-2 rounded border focus:border-accent outline-none">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Question Text</label>
+                        <textarea id="add-q-text" required rows="3" class="w-full p-2 rounded border focus:border-accent outline-none resize-none"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Question Type</label>
+                        <select id="add-q-type" class="w-full p-2 rounded border outline-none" onchange="toggleAddQOptions(this.value)">
+                            <option value="mcq">Multiple Choice (Options)</option>
+                            <option value="text">Direct Text Input (No Options)</option>
+                        </select>
+                    </div>
+
+                    <div id="add-q-options-container" class="grid grid-cols-2 gap-2 p-3 bg-gray-50 rounded border">
+                        <input type="text" id="add-q-opt-A" placeholder="Option A" class="w-full p-2 rounded border outline-none text-sm">
+                        <input type="text" id="add-q-opt-B" placeholder="Option B" class="w-full p-2 rounded border outline-none text-sm">
+                        <input type="text" id="add-q-opt-C" placeholder="Option C" class="w-full p-2 rounded border outline-none text-sm">
+                        <input type="text" id="add-q-opt-D" placeholder="Option D" class="w-full p-2 rounded border outline-none text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Correct Answer (Exact Match Required)</label>
+                        <input type="text" id="add-q-correct" required class="w-full p-2 rounded border border-green-300 focus:border-green-500 outline-none bg-green-50" placeholder="Type correct option or exact text">
+                        <p class="text-[10px] text-gray-500 mt-1">For MCQ, type exactly what is in the option box (e.g. "Paris"). The system uses this to auto-evaluate.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Positive Points</label>
+                            <input type="number" id="add-q-pts" required value="10" class="w-full p-2 rounded border outline-none text-green-700 font-bold bg-green-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Negative Points</label>
+                            <input type="number" id="add-q-neg" required value="5" class="w-full p-2 rounded border outline-none text-red-700 font-bold bg-red-50">
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Attach Media (Optional)</label>
+                        <div class="flex gap-2">
+                            <select id="add-q-media-type" class="p-2 rounded border outline-none w-1/3">
+                                <option value="none">None</option>
+                                <option value="image">Image URL</option>
+                                <option value="audio">Audio URL</option>
+                                <option value="video">Video URL (MP4)</option>
+                            </select>
+                            <input type="url" id="add-q-media-url" placeholder="https://..." class="w-2/3 p-2 rounded border outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-accent-color text-white rounded-xl font-bold mt-4 hover:bg-accent-dark transition">Save Question to Bank</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl transform transition-transform scale-95" id="alert-content">
+            <h3 class="text-xl font-bold mb-2 text-gray-800" id="alert-title">Title</h3>
+            <p class="text-gray-600 mb-6" id="alert-msg">Message</p>
+            <div class="flex justify-end">
+                <button onclick="closeAlert()" class="bg-gray-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-900">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Secure App ID extraction
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hindi_pakhwada';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { /* mock */ };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Application State
+        window.appState = {
+            role: null, // 'main', 'organizer', 'team'
+            teamId: sessionStorage.getItem(`quiz_team_${appId}`),
+            global: { status: 'waiting', currentQ: null, qStartTime: 0, qDuration: 10 },
+            questions: [],
+            teams: [],
+            submissions: []
+        };
+
+        // Utility: Custom Alert
+        window.showAlert = function(title, msg) {
+            document.getElementById('alert-title').textContent = title;
+            document.getElementById('alert-msg').textContent = msg;
+            const modal = document.getElementById('alert-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('alert-content').classList.remove('scale-95');
+                document.getElementById('alert-content').classList.add('scale-100');
+            }, 10);
+        }
+        window.closeAlert = function() {
+            document.getElementById('alert-content').classList.remove('scale-100');
+            document.getElementById('alert-content').classList.add('scale-95');
+            setTimeout(() => { document.getElementById('alert-modal').classList.add('hidden'); }, 200);
+        }
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Firebase Auth Success.");
+                setupRealtimeListeners();
+                
+                // Auto-resume team session if exists
+                if (window.appState.teamId) {
+                    setRole('team');
+                }
+            } catch (e) {
+                console.error("Auth error:", e);
+                showAlert("Connection Error", "Failed to connect to the game server. Please refresh.");
+            }
+        }
+
+        function setupRealtimeListeners() {
+            if (!auth.currentUser) return;
+            
+            // Global State
+            const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'state', 'global');
+            onSnapshot(globalRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const oldStatus = window.appState.global.status;
+                    window.appState.global = docSnap.data();
+                    handleStateChange(oldStatus);
+                } else {
+                    setDoc(globalRef, { status: 'waiting', currentQ: null, qStartTime: 0, qDuration: 10 });
+                }
+            }, (err) => console.error(err));
+
+            // Questions
+            const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'questions');
+            onSnapshot(qRef, (snap) => {
+                window.appState.questions = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                updateUI();
+            });
+
+            // Teams
+            const teamsRef = collection(db, 'artifacts', appId, 'public', 'data', 'teams');
+            onSnapshot(teamsRef, (snap) => {
+                window.appState.teams = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a, b) => b.score - a.score);
+                updateUI();
+                
+                // Validate session
+                if (window.appState.teamId && !window.appState.teams.find(t => t.id === window.appState.teamId)) {
+                    sessionStorage.removeItem(`quiz_team_${appId}`);
+                    window.appState.teamId = null;
+                    if(window.appState.role === 'team') setRole('home');
+                }
+            });
+
+            // Submissions
+            const subRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+            onSnapshot(subRef, (snap) => {
+                window.appState.submissions = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                updateUI();
+            });
+        }
+
+        window.switchView = function(viewId) {
+            // Hide all views completely using class replacement
+            document.querySelectorAll('.app-view').forEach(el => {
+                el.classList.remove('active-view');
+            });
+            
+            // Show Target View
+            const target = document.getElementById(viewId.startsWith('view-') ? viewId : `view-${viewId}`);
+            if (target) {
+                target.classList.add('active-view');
+            }
+
+            // Update badge
+            const badge = document.getElementById('role-badge');
+            if (window.appState.role && window.appState.role !== 'home') {
+                badge.textContent = window.appState.role.toUpperCase();
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        window.setRole = function(role) {
+            window.appState.role = role;
+            if (role === 'team' && !window.appState.teamId) {
+                switchView('team-register');
+            } else if (role === 'team') {
+                switchView('team-play');
+                updateUI();
+            } else if (role === 'organizer') {
+                switchView('organizer');
+                updateUI();
+            } else if (role === 'main') {
+                switchView('main');
+                updateUI();
+            } else {
+                switchView('home');
+            }
+        }
+
+        function handleStateChange(oldStatus) {
+            updateUI();
+            
+            // Dynamic Theme System based on Round Name
+            const body = document.body;
+            body.className = body.className.replace(/\btheme-\S+/g, '').trim();
+            
+            if (window.appState.global.currentQ) {
+                const q = window.appState.questions.find(x => x.id === window.appState.global.currentQ);
+                if (q && q.round) {
+                    let themeNum = 1;
+                    const match = q.round.match(/\d+/);
+                    if (match) {
+                        themeNum = (parseInt(match[0]) % 5) || 5;
+                    } else {
+                        let hash = 0;
+                        for (let i = 0; i < q.round.length; i++) {
+                            hash = q.round.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                        themeNum = (Math.abs(hash) % 5) + 1;
+                    }
+                    body.classList.add(`theme-${themeNum}`);
+                } else {
+                    body.classList.add('theme-home');
+                }
+            } else {
+                body.classList.add('theme-home');
+            }
+        }
+
+        window.updateUI = function() {
+            if (window.appState.role === 'main') renderMain();
+            if (window.appState.role === 'organizer') renderOrganizer();
+            if (window.appState.role === 'team') renderTeam();
+        }
+
+        function updateTimerVisuals() {
+            if (window.appState.global.status === 'active') {
+                const elapsed = (Date.now() - window.appState.global.qStartTime) / 1000;
+                let remaining = window.appState.global.qDuration - elapsed;
+                
+                if (remaining <= 0) {
+                    remaining = 0;
+                    if (window.appState.role === 'organizer') forceLock();
+                }
+
+                document.querySelectorAll('.time-display').forEach(el => {
+                    el.textContent = remaining.toFixed(1) + 's';
+                    if (remaining <= 3) {
+                        el.classList.add('text-red-500');
+                        const icon = document.getElementById('main-timer-icon');
+                        if(icon) icon.classList.add('text-red-500', 'animate-ping');
+                    } else {
+                        el.classList.remove('text-red-500');
+                        const icon = document.getElementById('main-timer-icon');
+                        if(icon) icon.classList.remove('text-red-500', 'animate-ping');
+                    }
+                });
+            } else if (window.appState.global.status === 'waiting') {
+                document.querySelectorAll('.time-display').forEach(el => el.textContent = '--s');
+            }
+            requestAnimationFrame(updateTimerVisuals);
+        }
+        requestAnimationFrame(updateTimerVisuals);
+
+        window.toggleRegTab = function(tab) {
+            if(tab === 'new') {
+                document.getElementById('form-new-team').classList.remove('hidden');
+                document.getElementById('form-recon-team').classList.add('hidden');
+                document.getElementById('tab-new').className = "flex-1 py-2 font-bold text-accent-dark border-b-2 border-accent";
+                document.getElementById('tab-recon').className = "flex-1 py-2 font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600";
+            } else {
+                document.getElementById('form-new-team').classList.add('hidden');
+                document.getElementById('form-recon-team').classList.remove('hidden');
+                document.getElementById('tab-recon').className = "flex-1 py-2 font-bold text-accent-dark border-b-2 border-accent";
+                document.getElementById('tab-new').className = "flex-1 py-2 font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600";
+            }
+        }
+
+        window.handleTeamRegister = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-tname').value.trim();
+            const secret = document.getElementById('reg-tsecret').value.trim();
+            const members = [
+                document.getElementById('reg-m1').value.trim(),
+                document.getElementById('reg-m2').value.trim(),
+                document.getElementById('reg-m3').value.trim(),
+                document.getElementById('reg-m4').value.trim(),
+                document.getElementById('reg-m5').value.trim()
+            ].filter(m => m !== '');
+
+            if (members.length < 3 || members.length > 5) {
+                showAlert('Invalid Team Size', 'A team must have exactly 3 to 5 candidates.');
+                return;
+            }
+            if (window.appState.teams.find(t => t.name.toLowerCase() === name.toLowerCase())) {
+                showAlert('Name Taken', 'This team name is already registered.');
+                return;
+            }
+
+            try {
+                const teamRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'teams'), {
+                    name, secret, members, score: 0, joinedAt: Date.now()
+                });
+                sessionStorage.setItem(`quiz_team_${appId}`, teamRef.id);
+                window.appState.teamId = teamRef.id;
+                setRole('team');
+            } catch(err) {
+                showAlert('Error', 'Could not register team.');
+            }
+        }
+
+        window.handleTeamReconnect = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('rec-tname').value.trim();
+            const secret = document.getElementById('rec-tsecret').value.trim();
+
+            const team = window.appState.teams.find(t => t.name.toLowerCase() === name.toLowerCase() && t.secret === secret);
+            if (team) {
+                sessionStorage.setItem(`quiz_team_${appId}`, team.id);
+                window.appState.teamId = team.id;
+                setRole('team');
+            } else {
+                showAlert('Reconnect Failed', 'Team not found or incorrect secret code.');
+            }
+        }
+
+        function renderTeam() {
+            const tWaiting = document.getElementById('team-state-waiting');
+            const tActive = document.getElementById('team-state-active');
+            const tLocked = document.getElementById('team-state-locked');
+            
+            const team = window.appState.teams.find(t => t.id === window.appState.teamId);
+            if (team) document.getElementById('team-identity-display').textContent = `Playing as: ${team.name}`;
+
+            if (window.appState.global.status === 'waiting') {
+                tWaiting.classList.remove('hidden'); tActive.classList.add('hidden'); tLocked.classList.add('hidden');
+            } 
+            else if (['active', 'locked', 'answers_revealed'].includes(window.appState.global.status)) {
+                tWaiting.classList.add('hidden');
+                
+                const q = window.appState.questions.find(x => x.id === window.appState.global.currentQ);
+                if (!q) return;
+
+                const mySub = window.appState.submissions.find(s => s.teamId === window.appState.teamId && s.questionId === q.id);
+
+                if (mySub || window.appState.global.status !== 'active') {
+                    tActive.classList.add('hidden'); tLocked.classList.remove('hidden');
+                    document.getElementById('team-submitted-ans').textContent = mySub ? mySub.answer : 'No answer submitted in time.';
+                } else {
+                    tActive.classList.remove('hidden'); tLocked.classList.add('hidden');
+                    document.getElementById('team-q-round').textContent = q.round;
+                    document.getElementById('team-q-text').textContent = q.text;
+
+                    const inputArea = document.getElementById('team-input-area');
+                    inputArea.innerHTML = ''; 
+
+                    if (q.type === 'mcq') {
+                        ['A', 'B', 'C', 'D'].forEach((label, idx) => {
+                            if (q.options && q.options[idx]) {
+                                const btn = document.createElement('button');
+                                btn.className = 'w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-accent hover:bg-accent-light hover:text-accent-dark font-semibold text-lg transition shadow-sm bg-white';
+                                btn.innerHTML = `<span class="font-bold mr-2 text-accent-color">${label}.</span> ${q.options[idx]}`;
+                                btn.onclick = () => submitTeamAnswer(q.options[idx]);
+                                inputArea.appendChild(btn);
+                            }
+                        });
+                    } else {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.id = 'team-text-ans';
+                        input.className = 'w-full p-4 rounded-xl border-2 border-gray-300 text-lg outline-none focus:border-accent shadow-sm';
+                        input.placeholder = 'Type your exact answer...';
+                        
+                        const btn = document.createElement('button');
+                        btn.className = 'w-full btn-accent font-bold py-4 rounded-xl mt-2 transition text-lg shadow-md';
+                        btn.innerHTML = '<i class="fa-solid fa-lock mr-2"></i> Lock Answer';
+                        btn.onclick = () => submitTeamAnswer(document.getElementById('team-text-ans').value);
+                        
+                        inputArea.appendChild(input);
+                        inputArea.appendChild(btn);
+                    }
+                }
+            }
+        }
+
+        window.submitTeamAnswer = async function(answerText) {
+            if (!answerText || answerText.trim() === '') return;
+            if (window.appState.global.status !== 'active') return;
+
+            const subId = `${window.appState.teamId}_${window.appState.global.currentQ}`;
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submissions', subId), {
+                    teamId: window.appState.teamId,
+                    questionId: window.appState.global.currentQ,
+                    answer: answerText.trim(),
+                    timestamp: Date.now(),
+                    evaluated: false
+                });
+            } catch (err) {
+                showAlert('Error', 'Failed to lock answer. Connection issue.');
+            }
+        }
+
+        function renderMain() {
+            const lbContainer = document.getElementById('main-leaderboard');
+            lbContainer.innerHTML = '';
+            window.appState.teams.forEach((t, i) => {
+                const isTop = i === 0 && t.score > 0;
+                lbContainer.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg shadow-sm border-l-4 ${isTop ? 'border-yellow-400' : 'border-gray-200'} flex justify-between items-center transition-transform hover:translate-x-1">
+                        <div>
+                            <div class="font-bold text-gray-800 flex items-center gap-2">
+                                ${isTop ? '<i class="fa-solid fa-crown text-yellow-500"></i>' : `<span class="text-xs text-gray-400">${i+1}.</span>`}
+                                ${t.name}
+                            </div>
+                            <div class="text-[10px] text-gray-500 line-clamp-1">${t.members.join(', ')}</div>
+                        </div>
+                        <div class="font-black text-lg ${t.score >= 0 ? 'text-green-600' : 'text-red-600'} bg-gray-50 px-2 py-1 rounded border">${t.score}</div>
+                    </div>
+                `;
+            });
+
+            const mWaiting = document.getElementById('main-state-waiting');
+            const mActive = document.getElementById('main-state-active');
+            
+            if (window.appState.global.status === 'waiting') {
+                mWaiting.classList.remove('hidden'); mWaiting.classList.add('flex');
+                mActive.classList.add('hidden'); mActive.classList.remove('flex');
+            } else {
+                mWaiting.classList.add('hidden'); mWaiting.classList.remove('flex');
+                mActive.classList.remove('hidden'); mActive.classList.add('flex');
+                
+                const q = window.appState.questions.find(x => x.id === window.appState.global.currentQ);
+                if (!q) return;
+
+                document.getElementById('main-q-round').textContent = q.round;
+                document.getElementById('main-q-pts').textContent = `+${q.points}`;
+                document.getElementById('main-q-neg').textContent = `-${q.negativePoints}`;
+                document.getElementById('main-q-text').textContent = q.text;
+
+                const mContainer = document.getElementById('main-media-container');
+                if (q.mediaType && q.mediaType !== 'none' && q.mediaUrl) {
+                    mContainer.classList.remove('hidden');
+                    if (q.mediaType === 'image') mContainer.innerHTML = `<img src="${q.mediaUrl}" class="max-h-full object-contain" onerror="this.innerHTML='<span class=\\'text-red-500\\'>Image load error</span>'">`;
+                    if (q.mediaType === 'audio') mContainer.innerHTML = `<audio controls src="${q.mediaUrl}" class="w-full max-w-md"></audio>`;
+                    if (q.mediaType === 'video') mContainer.innerHTML = `<video controls src="${q.mediaUrl}" class="max-h-full"></video>`;
+                } else {
+                    mContainer.classList.add('hidden');
+                }
+
+                const optGrid = document.getElementById('main-options-grid');
+                optGrid.innerHTML = '';
+                if (q.type === 'mcq') {
+                    ['A', 'B', 'C', 'D'].forEach((label, idx) => {
+                        if (q.options && q.options[idx]) {
+                            const isCorrect = q.options[idx].toLowerCase() === q.correctAnswer.toLowerCase();
+                            const showCorrect = window.appState.global.status === 'answers_revealed' && isCorrect;
+                            
+                            optGrid.innerHTML += `
+                                <div class="bg-white border-2 ${showCorrect ? 'border-green-500 bg-green-50 shadow-green-200' : 'border-gray-100'} p-4 lg:p-6 rounded-2xl shadow-md flex items-center transition-all ${showCorrect ? 'transform scale-105 z-10 correct-pulse' : ''}">
+                                    <div class="w-12 h-12 rounded-full ${showCorrect ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-500'} font-black text-xl flex items-center justify-center mr-4 flex-shrink-0 shadow-inner">
+                                        ${label}
+                                    </div>
+                                    <span class="text-xl lg:text-2xl font-bold ${showCorrect ? 'text-green-800' : 'text-gray-700'}">${q.options[idx]}</span>
+                                    ${showCorrect ? '<i class="fa-solid fa-circle-check ml-auto text-3xl text-green-500"></i>' : ''}
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                const banner = document.getElementById('main-reveal-banner');
+                const lockBanner = document.getElementById('main-lock-banner');
+                const subsForQ = window.appState.submissions.filter(s => s.questionId === q.id);
+
+                if (window.appState.global.status === 'locked') {
+                    banner.classList.add('hidden');
+                    lockBanner.classList.remove('hidden');
+                    
+                    const lockList = document.getElementById('main-lock-list');
+                    lockList.innerHTML = '';
+                    
+                    if (subsForQ.length === 0) {
+                        lockList.innerHTML = '<li class="text-gray-500 py-4 font-semibold text-lg">No teams submitted an answer in time.</li>';
+                    } else {
+                        subsForQ.sort((a, b) => a.timestamp - b.timestamp); // Sort by fastest
+                        subsForQ.forEach((sub, index) => {
+                            const team = window.appState.teams.find(t => t.id === sub.teamId);
+                            const tName = team ? team.name : 'Unknown Team';
+                            const timeTaken = Math.max(0.01, (sub.timestamp - window.appState.global.qStartTime) / 1000).toFixed(2);
+                            
+                            lockList.innerHTML += `
+                                <li class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center transform transition-all hover:scale-[1.01]">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center border">${index + 1}</span>
+                                        <span class="font-bold text-xl text-gray-800">${tName}</span>
+                                    </div>
+                                    <div class="font-mono text-accent-dark font-black text-xl flex items-center gap-2">
+                                        <i class="fa-solid fa-stopwatch text-gray-400 text-sm"></i> ${timeTaken}s
+                                    </div>
+                                </li>
+                            `;
+                        });
+                    }
+
+                } else if (window.appState.global.status === 'answers_revealed') {
+                    lockBanner.classList.add('hidden');
+                    banner.classList.remove('hidden');
+                    document.getElementById('main-reveal-ans').textContent = q.correctAnswer;
+                    
+                    const correctSubs = subsForQ.filter(s => s.isCorrect);
+                    if (correctSubs.length > 0) {
+                        correctSubs.sort((a, b) => a.timestamp - b.timestamp);
+                        const winnerSub = correctSubs[0];
+                        const winnerTeam = window.appState.teams.find(t => t.id === winnerSub.teamId);
+                        
+                        document.getElementById('main-fastest-winner').classList.remove('hidden');
+                        document.getElementById('main-winner-name').textContent = winnerTeam ? winnerTeam.name : 'Unknown';
+                        document.getElementById('main-winner-pts').textContent = `+${q.points}`;
+                    } else {
+                        document.getElementById('main-fastest-winner').classList.add('hidden');
+                    }
+
+                    const revealList = document.getElementById('main-reveal-list');
+                    revealList.innerHTML = '';
+                    
+                    if (subsForQ.length === 0) {
+                        revealList.innerHTML = '<li class="text-gray-500 py-4 font-semibold text-center">No submissions received.</li>';
+                    } else {
+                        // Sort: Fastest winner first, then other correct, then incorrect
+                        subsForQ.sort((a, b) => {
+                            if (a.isCorrect && !b.isCorrect) return -1;
+                            if (!a.isCorrect && b.isCorrect) return 1;
+                            return a.timestamp - b.timestamp;
+                        });
+
+                        subsForQ.forEach((sub) => {
+                            const team = window.appState.teams.find(t => t.id === sub.teamId);
+                            const tName = team ? team.name : 'Unknown Team';
+                            const isFastest = correctSubs.length > 0 && sub.id === correctSubs[0].id;
+                            
+                            let icon = sub.isCorrect ? '<i class="fa-solid fa-check text-green-500 text-xl"></i>' : '<i class="fa-solid fa-xmark text-red-500 text-xl"></i>';
+                            let ptsColor = sub.pointsAwarded > 0 ? 'text-green-600 bg-green-50 border-green-200' : (sub.pointsAwarded < 0 ? 'text-red-600 bg-red-50 border-red-200' : 'text-gray-500 bg-gray-50 border-gray-200');
+                            let ptsDisplay = sub.pointsAwarded > 0 ? `+${sub.pointsAwarded}` : sub.pointsAwarded;
+                            
+                            revealList.innerHTML += `
+                                <li class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center ${isFastest ? 'ring-2 ring-yellow-400' : ''}">
+                                    <div class="flex flex-col text-left w-2/3">
+                                        <span class="font-bold text-gray-800 text-lg">${tName}</span>
+                                        <span class="text-sm text-gray-500 italic truncate">Ans: "${sub.answer}"</span>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        ${icon}
+                                        <span class="font-bold w-16 text-center py-1 rounded border ${ptsColor}">${ptsDisplay}</span>
+                                    </div>
+                                </li>
+                            `;
+                        });
+                    }
+                } else {
+                    banner.classList.add('hidden');
+                    lockBanner.classList.add('hidden');
+                }
+            }
+        }
+
+        window.toggleAddQOptions = function(type) {
+            document.getElementById('add-q-options-container').style.display = type === 'mcq' ? 'grid' : 'none';
+        }
+
+        window.handleAddQuestion = async function(e) {
+            e.preventDefault();
+            const q = {
+                round: document.getElementById('add-q-round').value,
+                duration: Number(document.getElementById('add-q-duration').value) || 10,
+                text: document.getElementById('add-q-text').value,
+                type: document.getElementById('add-q-type').value,
+                correctAnswer: document.getElementById('add-q-correct').value.trim(),
+                points: Number(document.getElementById('add-q-pts').value),
+                negativePoints: Number(document.getElementById('add-q-neg').value),
+                mediaType: document.getElementById('add-q-media-type').value,
+                mediaUrl: document.getElementById('add-q-media-url').value,
+                createdAt: Date.now()
+            };
+
+            if (q.type === 'mcq') {
+                q.options = [
+                    document.getElementById('add-q-opt-A').value,
+                    document.getElementById('add-q-opt-B').value,
+                    document.getElementById('add-q-opt-C').value,
+                    document.getElementById('add-q-opt-D').value
+                ];
+            }
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'questions'), q);
+                document.getElementById('modal-add-q').classList.add('hidden');
+                e.target.reset();
+                showAlert('Success', 'Question permanently added to the bank.');
+            } catch(err) {
+                showAlert('Error', 'Failed to save question.');
+            }
+        }
+
+        window.loadSampleQuestions = async function() {
+            const samples = [
+                {
+                    round: "Round 1 (MCQ)", duration: 15, type: "mcq",
+                    text: "When is Hindi Diwas celebrated in India?",
+                    options: ["14 August", "14 September", "10 January", "2 October"],
+                    correctAnswer: "14 September", points: 10, negativePoints: 5,
+                    mediaType: "none", mediaUrl: "", createdAt: Date.now()
+                },
+                {
+                    round: "Round 1 (MCQ)", duration: 15, type: "mcq",
+                    text: "Which script is used for writing the official Hindi language in India?",
+                    options: ["Brahmi", "Kharosthi", "Devanagari", "Gurmukhi"],
+                    correctAnswer: "Devanagari", points: 10, negativePoints: 5,
+                    mediaType: "none", mediaUrl: "", createdAt: Date.now()
+                },
+                {
+                    round: "Round 2 (Buzzer)", duration: 20, type: "mcq",
+                    text: "Who is widely regarded as the 'Father of Modern Hindi Literature'?",
+                    options: ["Munshi Premchand", "Bharatendu Harishchandra", "Suryakant Tripathi 'Nirala'", "Mahadevi Varma"],
+                    correctAnswer: "Bharatendu Harishchandra", points: 20, negativePoints: 10,
+                    mediaType: "none", mediaUrl: "", createdAt: Date.now()
+                },
+                {
+                    round: "Round 3 (Direct)", duration: 30, type: "text",
+                    text: "Under which Article of the Indian Constitution is Hindi designated as the official language of the Union?",
+                    correctAnswer: "Article 343", points: 30, negativePoints: 0,
+                    mediaType: "none", mediaUrl: "", createdAt: Date.now()
+                }
+            ];
+
+            let added = 0;
+            for (const q of samples) {
+                // Prevent duplicate insertions
+                if (!window.appState.questions.find(existing => existing.text === q.text)) {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'questions'), q);
+                    added++;
+                }
+            }
+
+            if (added > 0) {
+                showAlert('Success', `Successfully loaded ${added} sample Hindi Pakhwada questions into the database!`);
+            } else {
+                showAlert('Info', 'The sample questions are already present in the bank.');
+            }
+        }
+
+        function renderOrganizer() {
+            const qList = document.getElementById('org-q-list');
+            qList.innerHTML = '';
+            
+            const rounds = {};
+            window.appState.questions.forEach(q => {
+                if(!rounds[q.round]) rounds[q.round] = [];
+                rounds[q.round].push(q);
+            });
+
+            for (const [rName, qs] of Object.entries(rounds)) {
+                qList.innerHTML += `<div class="font-bold text-xs text-gray-500 uppercase tracking-widest mt-4 mb-2 border-b pb-1">${rName}</div>`;
+                qs.forEach(q => {
+                    const isLive = window.appState.global.currentQ === q.id;
+                    qList.innerHTML += `
+                        <div class="p-3 mb-2 rounded-lg border flex justify-between items-center ${isLive ? 'bg-orange-50 border-orange-300' : 'bg-white hover:bg-gray-50'}">
+                            <div class="flex-grow pr-4">
+                                <span class="text-xs font-bold text-gray-400 mr-2">${q.type.toUpperCase()}</span>
+                                <span class="text-sm font-semibold text-gray-800 line-clamp-1">${q.text}</span>
+                                <div class="text-[10px] text-gray-400 mt-1"><i class="fa-regular fa-clock"></i> ${q.duration}s</div>
+                            </div>
+                            <button onclick="launchQuestion('${q.id}')" class="px-3 py-1 rounded text-xs font-bold ${isLive ? 'bg-orange-500 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} whitespace-nowrap">
+                                ${isLive ? '<i class="fa-solid fa-tower-broadcast"></i> LIVE' : 'Launch'}
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            const badge = document.getElementById('org-status-badge');
+            badge.textContent = window.appState.global.status;
+            
+            if (window.appState.global.status === 'waiting') {
+                document.getElementById('org-no-q-active').classList.remove('hidden');
+                document.getElementById('org-q-active').classList.add('hidden');
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-white text-gray-500 shadow-sm uppercase";
+            } else {
+                document.getElementById('org-no-q-active').classList.add('hidden');
+                document.getElementById('org-q-active').classList.remove('hidden');
+                
+                const q = window.appState.questions.find(x => x.id === window.appState.global.currentQ);
+                if(q) {
+                    document.getElementById('org-live-round').textContent = q.round;
+                    document.getElementById('org-live-text').textContent = q.text;
+                    document.getElementById('org-live-pts').textContent = `+${q.points}`;
+                    document.getElementById('org-live-neg').textContent = `-${q.negativePoints}`;
+                    document.getElementById('org-live-ans').textContent = q.correctAnswer;
+                    document.getElementById('org-live-dur').textContent = q.duration;
+                    
+                    const subs = window.appState.submissions.filter(s => s.questionId === q.id).length;
+                    document.getElementById('org-live-subs').textContent = `${subs} / ${window.appState.teams.length}`;
+                }
+
+                const btnLock = document.getElementById('btn-org-lock');
+                const btnReveal = document.getElementById('btn-org-reveal');
+                
+                if (window.appState.global.status === 'active') {
+                    badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm uppercase animate-pulse";
+                    btnLock.disabled = false; btnLock.classList.remove('opacity-50');
+                    btnReveal.disabled = true; btnReveal.classList.add('opacity-50');
+                } else if (window.appState.global.status === 'locked') {
+                    badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white shadow-sm uppercase";
+                    btnLock.disabled = true; btnLock.classList.add('opacity-50');
+                    btnReveal.disabled = false; btnReveal.classList.remove('opacity-50');
+                } else {
+                    badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-blue-500 text-white shadow-sm uppercase";
+                    btnLock.disabled = true; btnLock.classList.add('opacity-50');
+                    btnReveal.disabled = true; btnReveal.classList.add('opacity-50');
+                }
+            }
+        }
+
+        window.launchQuestion = async function(qId) {
+            const q = window.appState.questions.find(x => x.id === qId);
+            if(!q) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'state', 'global'), {
+                currentQ: q.id,
+                status: 'active',
+                qStartTime: Date.now(),
+                qDuration: Number(q.duration) || 10
+            });
+        }
+
+        window.forceLock = async function() {
+            if(window.appState.global.status !== 'active') return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'state', 'global'), {
+                status: 'locked'
+            });
+        }
+
+        window.clearMainScreen = async function() {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'state', 'global'), {
+                status: 'waiting',
+                currentQ: null
+            });
+        }
+
+        window.revealAndScore = async function() {
+            if(window.appState.global.status !== 'locked') return; 
+            
+            const q = window.appState.questions.find(x => x.id === window.appState.global.currentQ);
+            if(!q) return;
+
+            let subs = window.appState.submissions.filter(s => s.questionId === q.id);
+            // Sort by earliest timestamp (Fastest finger)
+            subs.sort((a, b) => a.timestamp - b.timestamp);
+            
+            let firstCorrectFound = false;
+
+            // Strict Fastest Finger Rules: 
+            // - The FIRST correct submission gets POSITIVE points.
+            // - ANY incorrect submission gets NEGATIVE points.
+            // - Any correct submission AFTER the first gets ZERO points.
+            for (let sub of subs) {
+                const isCorrect = sub.answer.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase();
+                let ptsAwarded = 0;
+
+                if (isCorrect && !firstCorrectFound) {
+                    ptsAwarded = q.points;
+                    firstCorrectFound = true; 
+                } else if (!isCorrect) {
+                    ptsAwarded = -Math.abs(q.negativePoints); 
+                }
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submissions', sub.id), {
+                    isCorrect: isCorrect,
+                    pointsAwarded: ptsAwarded,
+                    evaluated: true
+                });
+
+                if (ptsAwarded !== 0) {
+                    const team = window.appState.teams.find(t => t.id === sub.teamId);
+                    if(team) {
+                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'teams', team.id), {
+                            score: (team.score || 0) + ptsAwarded
+                        });
+                    }
+                }
+            }
+
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'state', 'global'), {
+                status: 'answers_revealed'
+            });
+        }
+
+        // Initialize App
+        initAuth();
+
+    </script>
+</body>
+</html>
